@@ -6,7 +6,7 @@
 \maketitle
 \begin{abstract}
 We consider the problem of covering a set of points in the plane by 
-using as few unit squares as possible, whose locations can be chosen freely. 
+using as few axis-aligned unit squares as possible, whose locations can be chosen freely. 
 The problem is known to be NP-hard even in the case where the covering 
 squares are chosen from a finite set. We propose an exact algorithm and a heuristic
 in which the complexity can be controlled by narrowing the search space.
@@ -15,7 +15,7 @@ spatial density of nodes.
 \end{abstract}
 \section{Introduction}
 We consider the problem of covering a set of points in the plane by 
-using as few unit squares as possible, whose locations can be chosen freely. 
+using as few axis-aligned unit squares as possible, whose locations can be chosen freely. 
 The problem is known to be NP-hard even in the case where the covering 
 squares are chosen from a finite set. We propose an exact algorithm and a heuristic
 in which the complexity can be controlled by narrowing the search space.
@@ -82,17 +82,28 @@ However, $q_3$ is not included in the nondominated set since $C_{q_3} \subset C_
 \end{center}
 \end{figure}
 
-The algorithm proceeds recursively as follows: For each $q \in Q$, a square is placed at $q$
-and the nodes inside $q$ are covered. Then the second phase is repeated until all nodes are covered.
+The algorithm proceeds recursively as follows: For each $q \in Q$, a square is placed at $q$, 
+the nodes inside $q$ are covered and the second phase is repeated.
 
 Executing the second phase may produce several different solutions to the problem since all
 squares in the nondominated set are considered each time the second phase is executed.
 The optimal solution to the problem is obtained by choosing the solution in which the 
 number of squares is minimized.
 
+
+\subsection{Heuristic}
+The exact solution is naturally extended to a heuristic by narrowing
+the dominating set of squares at each step to a certain maximum number $M$
+of squares. The narrowed set $Q'$ is determined by including the squares 
+$q_i \in Q$ that cover the most nodes. If $M=1$, the algorithm runs in linear time.
+In order to control the computational effort smoothly, $M$ can be defined
+as a random variable, for example, $M=1$ with probability $p$ and $M=2$ with probability $p-1$.
+
+
 \section{Complexity analysis}
-Let us consider the complexity of the exact algorithm as a function of the point
-density $\lambda$ of nodes. 
+The general set cover problem is known to be NP-hard. In this work we focus on the
+average-case complexity of the exact algorithm as a function of the point
+density $\lambda$. 
 Suppose that the number of nodes $\xi(V)$ in a region of size $V$ follows the Poisson 
 distribution, that is, 
 \begin{align*}
@@ -103,16 +114,46 @@ where $\lambda$ is the point density of nodes in a region of unit size.
 \subsection{First phase}
 A node $i$ is a corner node with probability 
 \begin{align}
+\notag
+P_c & =4 \cdot P(\xi(3)=0) \cdot P(\xi(1) > 0) + P(\xi(4)=0) \\ 
 \label{cornerprob}
-P_c=4 \cdot P(\xi(3)=0) \cdot P(\xi(1) > 0) + P(\xi(4)=0) = 4 e^{-3 \lambda} (1-e^{-\lambda}) + e^{-4 \lambda}.
+& = 4 e^{-3 \lambda} (1-e^{-\lambda}) + e^{-4 \lambda} = e^{-4 \lambda } (4 e^{\lambda }-3).
 \end{align}
 Note that in finite regions, the probability is greater due to border effects. In addition,
 the elimination of corner nodes may generate new corner nodes. 
-Thus, the probability \eqref{cornerprob} gives us a lower bound $nP_c$ for the expected number of corner nodes. 
-The corresponding expected number of nodes covered by the squares covering the corner nodes equals $(\lambda + 1) n P_c$.
+Thus, the probability \eqref{cornerprob} gives us a lower bound 
+$nP_c$ for the expected number of corner nodes. 
+The corresponding expected number of nodes covered by the squares 
+covering the corner nodes equals $(\lambda + 1) n P_c$.
 
 \subsection{Second phase}
-The expected number of nodes remaining in the second phase is given by $n(1-(\lambda + 1)P_c)$. At each step,
-the expected number of nodes in sectors $A$ and $D$ equals $2 \lambda$
+The expected number of nodes remaining in the second phase is bounded
+by $n(1-(\lambda + 1)P_c)$. At each step, the expected number of nodes 
+in sector $D$ (including the center node) equals $\lambda + 1$, which is
+an upper bound for the expected number of squares $q$ in the nondominated set $Q$.
+
+Each square in the nondominated set covers on average $\lambda + 1$ nodes and thus the
+expected number of steps needed in the second phase to cover all nodes is bounded by 
+$n(1-(\lambda + 1)P_c) / (\lambda + 1)$. Since the expected number of branches beginning at 
+each step is $\lambda + 1$, the average-case complexity of the exact solution is given by
+\begin{align*}
+(\lambda + 1)^{n(\frac{1}{\lambda + 1} - P_c)} = 
+(\lambda+1)^{n(\frac{1}{\lambda + 1} - e^{-4 \lambda } (4 e^{\lambda }-3))}.
+\end{align*}
+The factor of $n$ is maximized ($\approx 0.371$) at $\lambda \approx 1.26$. Thus the average case 
+complexity is of order $\mathcal{O}((\lambda+1)^{0.371 n})$.
+%\begin{align*}
+%-4 e^{-3 \lambda }+4 e^{-4 \lambda } \left(-3+4 e^{\lambda }\right)-\frac{1}{(1+\lambda )^2} = 0 \\
+%\end{align*}
+
+
+\section{Conclusions}
+We have considered the average-case complexity of the square covering problem 
+as a function of the spatial density $\lambda$ of nodes.
+We suggest a two-phase exact solution and show that the expected complexity 
+is of order $\mathcal{O}((\lambda+1)^{0.371 n})$.
+By narrowing the search space, the exact method is extended to an adjustable 
+heuristic in which the computational effort can be controlled smoothly. The 
+simplest version of the heuristic runs in linear time.
 
 \end{document}
