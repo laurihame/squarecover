@@ -34,8 +34,7 @@ are denoted by their lower left corners. The number of nodes is denoted by $n$.
 The detection and covering of corner nodes is executed as follows: For each node $i \in \{1,\ldots,n\}$,
 we check if there are non-covered nodes in the surrounding unit square sectors $A,B,C,D$, see Figure \ref{sectors01}. 
 If all sectors are empty, node $i$ is covered by placing a square in any of the
-sectors, for example $A$ (Figure \ref{sectors01}a). If exactly three of the sectors are empty, a square is placed in 
-the fourth non-empty sector (Figure \ref{sectors01}b). 
+sectors, for example $A$ (Figure \ref{sectors01}a). If exactly three of the sectors are empty, a square is placed in the fourth non-empty sector (Figure \ref{sectors01}b). 
 In this case, the nodes in that sector are covered in addition to node $i$.
 If the number of empty sectors is less than three (Figure \ref{sectors01}c), no square is placed and 
 the algorithm proceeds to the next node.
